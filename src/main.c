@@ -3,20 +3,6 @@
     notacionPolacaInversa. 
     Usuario Git: @dperalta86
 */
-
-/**************************************************************************
-            RECORRER ARBOLES MEDIANTE NOTACIÓN POLACA INVERSA
-
-# Se recibe un string por consola o un archivo .txt (se recibe
-ruta por argumento) con una lista de strings con distintas notaciones.
-
-# Se apilan numeros a la espera de un operador
-# Cuando se recibe operador, se desapilan 2 elementos y se operan, se apila
-el resultado.
-# El resultado final queda en la pila (unico elemento).
-
-***************************************************************************/
-
 #include<stdio.h>
 #include<string.h>
 #include <stdlib.h>
