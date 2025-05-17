@@ -1,0 +1,116 @@
+/* 
+    Código de prueba, realizado por Daniel Peralta, subido al repositorio
+    notacionPolacaInversa. 
+    Usuario Git: @dperalta86
+*/
+
+/**************************************************************************
+            RECORRER ARBOLES MEDIANTE NOTACIÓN POLACA INVERSA
+
+# Se recibe un string por consola o un archivo .txt (se recibe
+ruta por argumento) con una lista de strings con distintas notaciones.
+
+# Se apilan numeros a la espera de un operador
+# Cuando se recibe operador, se desapilan 2 elementos y se operan, se apila
+el resultado.
+# El resultado final queda en la pila (unico elemento).
+
+***************************************************************************/
+
+#include<stdio.h>
+#include<string.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <math.h>
+
+// Definición de la pila
+typedef struct StackNode {
+    double data;
+    struct StackNode* next;
+} StackNode;
+
+double recorrerNotacionPolacaInversa(const char*);
+void push(StackNode**, double);
+double pop(StackNode**);
+
+int main(int argc,char *argv[]){
+    int existeAtgumentos = 0;
+    char expression[256];
+    if (argc>1)
+        existeAtgumentos = 1;
+    if (argc > 2){
+        printf("archivo: %s, se esperaba como máximo un argumento adicional.", argv[0]);
+        return 1;
+    }
+    
+    // Si no existe parámetro para buscar archivo, pido que se ingrese por consola
+    if (argc == 1){
+        printf("Ingrese la expresión en notación polaca inversa (ej: '3 4 + 2 *'): ");
+        fgets(expression, sizeof(expression), stdin);
+    }// Queda pendiente lectura desde archivo y cargar cadena a variable
+
+    expression[strcspn(expression, "\n")] = '\0'; // Eliminar el salto de línea
+
+    double result = recorrerNotacionPolacaInversa(expression);
+    printf("Resultado: %f\n", result);
+
+
+    return 0;
+    
+}
+
+void push(StackNode** top, double data) {
+    StackNode* newNode = (StackNode*)malloc(sizeof(StackNode));
+    newNode->data = data;
+    newNode->next = *top;
+    *top = newNode;
+}
+
+double pop(StackNode** top) {
+    if (*top == NULL) {
+        fprintf(stderr, "Error: pila vacía\n");
+        exit(EXIT_FAILURE);
+    }
+    StackNode* temp = *top;
+    double data = temp->data;
+    *top = temp->next;
+    free(temp);
+    return data;
+}
+
+// Función para evaluar la expresión RPN
+double recorrerNotacionPolacaInversa(const char* expression) {
+    StackNode* stack = NULL;
+    char* token;
+    char* rest = strdup(expression); // Copia para strtok_r
+
+    while ((token = strtok_r(rest, " ", &rest))) {
+        if (isdigit(token[0]) || (token[0] == '-' && isdigit(token[1]))) {
+            // Es un número
+            push(&stack, atof(token));
+        } else {
+            // Es un operador
+            double b = pop(&stack);
+            double a = pop(&stack);
+            switch (token[0]) {
+                case '+': push(&stack, a + b); break;
+                case '-': push(&stack, a - b); break;
+                case '*': push(&stack, a * b); break;
+                case '/': push(&stack, a / b); break;
+                case '^': push(&stack, pow(a, b)); break;
+                default:
+                    fprintf(stderr, "Operador desconocido: %c\n", token[0]);
+                    exit(EXIT_FAILURE);
+            }
+        }
+    }
+
+    if (stack == NULL || stack->next != NULL) {
+        fprintf(stderr, "Expresión inválida\n");
+        exit(EXIT_FAILURE);
+    }
+
+    double result = pop(&stack);
+    return result;
+}
+
