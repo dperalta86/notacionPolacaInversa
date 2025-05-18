@@ -20,20 +20,35 @@ void push(StackNode**, double);
 double pop(StackNode**);
 
 int main(int argc,char *argv[]){
-    int existeAtgumentos = 0;
-    char expression[256];
-    if (argc>1)
-        existeAtgumentos = 1;
+    int existeArgumentos = 0;
+    char expression[256]; // ver si se puede optimizar
+    char *pathArchivo=NULL;
+
+    // Manejo de argumentos
     if (argc > 2){
-        printf("archivo: %s, se esperaba como máximo un argumento adicional.", argv[0]);
-        return 1;
+    printf("archivo: %s, se esperaba como máximo un argumento adicional.", argv[0]);
+    return EXIT_FAILURE;
     }
-    
-    // Si no existe parámetro para buscar archivo, pido que se ingrese por consola
-    if (argc == 1){
+    if (argc==2){
+        pathArchivo = argv[1];
+        existeArgumentos = 1;
+    }
+   
+    if (existeArgumentos){
+        FILE *f;
+        if (f=fopen(pathArchivo, "r")){
+        fgets(expression, sizeof(expression), f);
+        fclose(f);
+        }else{
+        printf("Error al intentar acceder al archivo: %s.", argv[1]);
+        return EXIT_FAILURE;
+        }
+
+    }else{
+        // Si no existe parámetro para buscar archivo, pido que se ingrese por consola
         printf("Ingrese la expresión en notación polaca inversa (ej: '3 4 + 2 *'): ");
         fgets(expression, sizeof(expression), stdin);
-    }// Queda pendiente lectura desde archivo y cargar cadena a variable
+    }
 
     expression[strcspn(expression, "\n")] = '\0'; // Eliminar el salto de línea
 
@@ -45,6 +60,7 @@ int main(int argc,char *argv[]){
     
 }
 
+// Funciones de pila (stack)
 void push(StackNode** top, double data) {
     StackNode* newNode = (StackNode*)malloc(sizeof(StackNode));
     newNode->data = data;

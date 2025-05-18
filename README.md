@@ -51,21 +51,21 @@ Requisitos:
 Compilar:
 bash
 
-gcc src/main.c src/stack.c -o bin/rpn -Iinclude -lm
+    gcc src/main.c -o bin/rpn -Iinclude -lm
 
 Ejecutar:
 
-    Modo consola:
-    bash
+Modo consola:
+bash
 
-./bin/rpn
+    ./bin/rpn
 
 Ingresa expresiones como: 3 4 + 2 * (resultado: 14).
 
-Modo archivo:
+Modo lectura desde archivo:
 bash
 
-    ./bin/rpn samples/input_file.txt
+    ./bin/rpn input_file.txt
 
 ### 📝 Ejemplos de Entrada/Salida
 Expresión 1:
